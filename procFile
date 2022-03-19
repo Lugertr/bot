@@ -1,1 +1,1 @@
-worker: node index.js
+testing: node index.js
