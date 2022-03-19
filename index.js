@@ -1,6 +1,7 @@
-const Discord = require("discord.js");
-
-const config = require("./config.json");
+import Discord from "discord.js";
+//import config from "./config.js";
+import download from './instruments/download.js';
+import read from './instruments/readExel.js';
 
 const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
 
@@ -13,12 +14,7 @@ client.on("messageCreate", function(message) {
   const commandBody = message.content.slice(prefix.length);
   const args = commandBody.split(' ');
   const command = args.shift().toLowerCase();
-  if (command === "птн") {
-    const timeTaken = Date.now() - message.createdTimestamp;
-    message.reply(`пнх`);
-  }   
-
-  else if (command === "sum") {
+   if (command === "sum") {
     const numArgs = args.map(x => parseFloat(x));
     const sum = numArgs.reduce((counter, x) => counter += x);
     message.reply(`The sum of all the arguments you provided is ${sum}!`);
@@ -27,4 +23,4 @@ client.on("messageCreate", function(message) {
 
 });                                      
 
-client.login(config.BOT_TOKEN);
+client.login(process.env.DJS_TOKEN);
