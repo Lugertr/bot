@@ -1,0 +1,92 @@
+import Discord from "discord.js";
+//import config from "./config.js";
+import download from './instruments/opDownload/download.js';
+import iterationRead from './instruments/excel/iterationRead.js';
+//import mongoose from "./instruments/dataBase.js";
+import dotenv from 'dotenv';
+import showData from './instruments/show/find.js';
+import createOutput from './instruments/show/createOutput.js';
+import saveData from './instruments/dataBase/saveData.js'
+import comms_list from 'coms.js'
+
+dotenv.config();
+
+const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
+
+const prefix = process.env.PREFIX;
+
+
+client.on("messageCreate", function(message) { 
+  if (message.author.bot) return;
+  if (!message.content.startsWith(prefix)) return;
+
+  const commandBody = message.content.slice(prefix.length);
+  const args = commandBody.split(' ');
+  const command = args.shift().toLowerCase();
+
+  for (let counter in comms_list) 
+  {
+    if (command === comms_list[counter].name)
+      {
+        comms_list[counter]
+      }
+  }
+
+   if (command === 'обновить')
+   {
+    let arr = [];
+        //download()
+        new Promise(resolve=>resolve(60))
+          // .then((resolve)=>{
+          //   db.init()
+          //   return resolve})
+          .then((resolve) => {
+            message.reply('Идет обновление расписания...');
+          return iterationRead(resolve-59,db)
+
+          }).then(()=>{
+            
+            message.reply('База данных обновлена');
+          });
+   }
+   else if (command === 'расписание')
+    {
+        if (!args) {
+          console.log('Введите название группы')
+
+        }
+        else {
+          console.log('Идёт поиск...')
+        showData(db,...args).then((resolve,reject)=>
+          
+        {
+          if (reject) 
+            message.reply("Пользователь не найден")
+          else {
+            createOutput(resolve).then((resolve, reject) =>{
+
+              if (reject) 
+                message.reply("Пользователь не найден")
+              else 
+                message.reply(resolve)
+            })
+          }
+        }
+        )
+        //db.get({name:'ЭЛБО-02-19'}).then((resolve)=>{
+        }
+    }
+    else if (command == 'hipe')
+    {
+      //db.clear();
+    }
+   else if (command === "sum") {
+    const numArgs = args.map(x => parseFloat(x));
+    const sum = numArgs.reduce((counter, x) => counter += x);
+    message.reply(`The sum of all the arguments you provided is ${sum}!`);
+  }
+                                         
+});                                      
+
+let db = new saveData();
+client.login(process.env.DJS_TOKEN);
